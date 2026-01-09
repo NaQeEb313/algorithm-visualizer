@@ -62,6 +62,15 @@ algorithm_visualizer/
 
   Example:
 
+  subset
+  1 2 3
+
+  permutation
+  1 2 3
+
+  combination
+  1 2 3
+
   binary
   3
 
