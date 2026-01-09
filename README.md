@@ -87,7 +87,11 @@ algorithm_visualizer/
 => → Valid output
 
 
+
+
 📈 What you learn from this project
+
+
 
 Practical understanding of recursion
 
@@ -99,7 +103,10 @@ Difference between conceptual flow vs execution
 
 Clean separation of logic and visualization
 
+
+
 📌 Why this design?
+
 
 C++ handles algorithm execution efficiently
 
@@ -107,11 +114,17 @@ Python simplifies visualization and UI
 
 Separation of concerns keeps the project clean and extendable
 
+
+
 🔓 License
+
 
 This project is licensed under the MIT License — free to use, modify, and learn from.
 
+
+
 👤 Author
+
 
 Syed Naquib - (NaQeEb313)
 Engineering Student | Learning Algorithms & Systems
