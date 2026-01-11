@@ -257,6 +257,11 @@ Permutation: up to 10–11
 * Using very large inputs (millions of steps)
 * Adding delay in C++ for large inputs
 
+##  OUTPUT SHOULD LOOK LIKE THE IMAGE BELOW (;
+
+<img width="1186" height="602" alt="image" src="https://github.com/user-attachments/assets/f03e7c85-3eb9-4695-af3d-81f8795fdda9" />
+
+
 ---
 
 ## 🎓 Educational Purpose
