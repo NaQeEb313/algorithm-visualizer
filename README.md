@@ -4,12 +4,50 @@
 
 # 🔁 Backtracking Algorithm Visualizer
 
-A **code-driven backtracking visualizer** that separates **algorithm execution (C++)** from **visualization (browser)**.
+A **two-phase backtracking visualization system** that cleanly separates **algorithm execution** from **visual animation**.
 
-* **C++** generates recursion steps into a log file
-* **JavaScript (p5.js)** animates those steps in the browser
+* **C++ (main.cpp)** generates a detailed execution trace (`steps.log`)
+* **Browser (p5.js)** replays those steps interactively
 
-This keeps the algorithm **fast**, **clean**, and **easy to understand**.
+This design keeps the algorithm **fast**, **clean**, and **easy to understand**, while making visualization flexible.
+
+---
+
+## ✨ Key Features
+
+* Visualizes **backtracking recursion flow**
+* Supports multiple algorithms:
+
+  * Binary generation
+  * Subsets
+  * Combinations
+  * Permutations
+* Clear visualization of:
+
+  * Call stack (recursion depth)
+  * Current recursion path
+  * Outputs (current + previous 2)
+  * Time-complexity trend graph
+* Smooth, controllable animations in browser
+* Input can be provided via **file or terminal**
+
+---
+
+## 🧠 Architecture Overview
+
+```
+C++ Algorithm Engine
+        │
+        ▼
+   steps.log   (execution trace)
+        │
+        ▼
+Browser Visualizer (p5.js)
+```
+
+* C++ handles **logic & speed**
+* Browser handles **animation & interaction**
+* No performance loss due to rendering
 
 ---
 
@@ -18,8 +56,10 @@ This keeps the algorithm **fast**, **clean**, and **easy to understand**.
 ```
 .
 ├── main.cpp        # Backtracking algorithms (C++)
-├── steps.log       # Auto-generated execution steps
-├── index.html      # Browser visualizer (p5.js)
+├── algo.exe        # Compiled executable (Windows)
+├── input.txt       # User input file
+├── steps.log       # Generated execution steps
+├── index.html      # Browser visualizer
 └── README.md
 ```
 
@@ -27,7 +67,7 @@ This keeps the algorithm **fast**, **clean**, and **easy to understand**.
 
 ## ⚙️ Supported Algorithms
 
-| Name          | Description                      |
+| Algorithm     | Description                      |
 | ------------- | -------------------------------- |
 | `binary`      | Binary string generation         |
 | `subset`      | All subsets of a set             |
@@ -36,82 +76,110 @@ This keeps the algorithm **fast**, **clean**, and **easy to understand**.
 
 ---
 
-## 🚀 How to Use (After Downloading)
+## 🚀 How to Run (Exact Steps)
 
-### 1️⃣ Compile the Code
+### 1️⃣ Compile the C++ Code
+
+Open **PowerShell / Terminal** in the project folder:
 
 ```bash
-g++ main.cpp -o visualizer
+g++ main.cpp -o algo.exe
 ```
 
 ---
 
-### 2️⃣ Run the Program and Give Input
+### 2️⃣ Create the Input File (`input.txt`)
 
-The program reads from **standard input**.
+This project is designed to work cleanly with **file-based input**.
 
-#### Input Format
+Create a file named **`input.txt`**.
 
-```
-<algorithm_name>
-<input values>
-```
-
-#### Examples
-
-**Binary (length = 3)**
+#### Example: Binary (length = 3)
 
 ```
 binary
 3
 ```
 
-**Subset**
+#### Example: Subset
 
 ```
 subset
 1 2 3
 ```
 
-**Combination**
+#### Example: Combination
 
 ```
 combination
 1 2 3 4
 ```
 
-**Permutation**
+#### Example: Permutation
 
 ```
 permutation
 1 2 3
 ```
 
-Run:
+---
 
-```bash
-./visualizer
+### 3️⃣ Run Using PowerShell (Recommended)
+
+```powershell
+gc input.txt | .\algo.exe
 ```
 
-✔ This generates **`steps.log`**
+✔ Uses standard input (`cin`)
+✔ Automatically generates `steps.log`
+✔ No manual typing needed
 
 ---
 
-### 3️⃣ Open the Visualizer in Browser
+### 🔹 Alternative (CMD / Git Bash / Linux / macOS)
 
-Start a local server (recommended):
+```bash
+algo.exe < input.txt
+```
+
+---
+
+## 🌐 Visualize in Browser (Live)
+
+The browser **cannot directly read files** without a server.
+
+### 4️⃣ Start a Local Server
+
+#### Option A: Python (if available)
 
 ```bash
 python -m http.server
 ```
 
-Open in browser:
+or
+
+```bash
+python3 -m http.server
+```
+
+---
+
+#### Option B: VS Code (Recommended for Students)
+
+1. Open the folder in **VS Code**
+2. Install **Live Server** extension
+3. Right-click `index.html`
+4. Click **“Open with Live Server”**
+
+---
+
+### 5️⃣ Open the Visualizer
 
 ```
 http://localhost:8000/index.html
 ```
 
-📌 **`steps.log` and `index.html` must be in the same folder.**
+> 📌 `steps.log` and `index.html` **must be in the same folder**
 
 ---
 
@@ -125,34 +193,47 @@ http://localhost:8000/index.html
 
 ---
 
-## 📏 Maximum Input Size (IMPORTANT)
+## ⏱️ Speed Control (Important)
 
-Backtracking grows **exponentially**, so limits are intentional.
+### 🔹 C++ Side
 
-### 🔹 Recommended (With Visualization)
+* No delay by default
+* Controlled via:
 
-```
-Input size: 8 – 12
-```
+  ```cpp
+  constexpr int VISUAL_DELAY_MS = 0;
+  ```
+* Recommended: **keep it 0**
 
-✔ Smooth animation
-✔ Clear understanding
-✔ Best for learning & demos
+### 🔹 Browser Side
+
+* Step speed controlled by:
+
+  ```js
+  let frameDelay = 45;
+  ```
+* Animation smoothness:
+
+  ```js
+  const OUTPUT_LERP = 0.05;
+  ```
+
+> **Best practice:**
+> Generate logs fast in C++, control speed in browser.
 
 ---
 
-### 🔹 Without Visualization (C++ only)
+## 📏 Maximum Input Size (Important)
+
+Backtracking is **exponential**, so limits are intentional.
+
+### ✅ Recommended (With Visualization)
 
 ```
-Binary / Subset: up to 25–30
-Permutation: up to 10–11
+Input size ≈ 8–12
 ```
 
-⚠️ Not suitable for visualization
-
----
-
-### 📊 Algorithm-wise Limits (Visual)
+### 📊 Algorithm-wise Visual Limits
 
 | Algorithm       | Max Input |
 | --------------- | --------- |
@@ -160,13 +241,21 @@ Permutation: up to 10–11
 | Combination     | 8–10      |
 | Permutation     | 7–8       |
 
+### ⚠️ Without Visualization (C++ only)
+
+```
+Binary / Subset: up to 25–30
+Permutation: up to 10–11
+```
+
 ---
 
-## ⚡ Performance Notes
+## ❌ Common Mistakes
 
-* C++ runs **without delay by default**
-* Visualization speed is controlled **only in the browser**
-* Logging is optimized for speed
+* Opening `index.html` by double-clicking (won’t load `steps.log`)
+* Forgetting to run `algo.exe` before browser
+* Using very large inputs (millions of steps)
+* Adding delay in C++ for large inputs
 
 ---
 
@@ -177,7 +266,8 @@ This project helps understand:
 * Recursion
 * Backtracking
 * Call stack behavior
-* Time complexity growth
+* Exponential time complexity
+* Separation of concerns
 
 Ideal for:
 
@@ -187,27 +277,29 @@ Ideal for:
 
 ---
 
+## 🔮 Future Enhancements
+
+* Recursion tree visualization
+* Fast-forward / skip steps
+* Step-by-step manual mode
+* Zoom & pan support
+* Export visualization as video/GIF
+* Support for more algorithms (N-Queens, Sudoku, etc.)
+
+---
+
 ## 🧠 Design Philosophy
 
 > **Compute fast. Visualize separately.**
 
-The algorithm does **not** slow down for animation.
-The browser replays execution independently.
-
----
-
-## 🔮 Future Scope
-
-* Recursion tree visualization
-* Step skipping / fast-forward
-* Zoom & pan support
-* Export animation
+The algorithm never slows down for animation.
+The browser handles all timing and interaction.
 
 ---
 
 ## 📜 License
 
-Free to use for **educational and personal purposes**.
+Free for **educational and personal use**.
 
 ---
 
