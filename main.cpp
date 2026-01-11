@@ -1,7 +1,16 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <thread>
+#include <chrono>
+
 using namespace std;
+
+/* ===================== CONFIG ===================== */
+
+
+constexpr int VISUAL_DELAY_MS = 0;
 
 /* ===================== BASE CLASS ===================== */
 
@@ -13,13 +22,24 @@ protected:
 
     void emit(const string& type, int depth, const string& value)
     {
-        cout << type << " " << depth << " " << value << endl;
+        static ofstream log("steps.log", ios::out);
+
+        log << type << " " << depth << " " << value << "\n";
+
+        // 🔥 CUSTOM DELAY (optional)
+        if (VISUAL_DELAY_MS > 0)
+        {
+            this_thread::sleep_for(
+                chrono::milliseconds(VISUAL_DELAY_MS)
+            );
+        }
     }
 
     string vecToStr(const vector<int>& v)
     {
         string s = "[";
-        for (int x : v) s += to_string(x) + " ";
+        for (int x : v)
+            s += to_string(x) + " ";
         s += "]";
         return s;
     }
@@ -158,13 +178,25 @@ public:
 
 int main()
 {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    // clear old log
+    {
+        ofstream f("steps.log", ios::out);
+    }
+
     string algorithm;
     cin >> algorithm;
 
     vector<int> arr;
     int x;
     while (cin >> x)
+    {
         arr.push_back(x);
+        if (cin.peek() == '\n')
+            break;
+    }
 
     if (algorithm == "binary")
     {
@@ -178,7 +210,7 @@ int main()
     }
     else if (algorithm == "combination")
     {
-        int k = 2;
+        int k = 2; // change if needed
         CombinationVisualizer cv(arr, k);
         cv.visualizeCombination(0);
     }
