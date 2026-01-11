@@ -1,143 +1,214 @@
-# 🔍 Algorithm Visualizer (C++ + Python)
 
-A step-by-step **visualization of backtracking algorithms** implemented in **C++** and visualized using a **Python-based UI** to demonstrate **recursion, stack behavior, and backtracking flow**.
 
 ---
 
-## ✨ What this project shows
+# 🔁 Backtracking Algorithm Visualizer
 
-- How **recursion works internally**
-- How the **call stack grows and shrinks**
-- Why **backtracking returns** step by step
-- Clear difference between **choose / output / backtrack**
-- Real-time **animated execution flow**
+A **code-driven backtracking visualizer** that separates **algorithm execution (C++)** from **visualization (browser)**.
 
-This project is focused on **understanding**, not just solving.
+* **C++** generates recursion steps into a log file
+* **JavaScript (p5.js)** animates those steps in the browser
 
----
-
-## 🧠 Algorithms Visualized
-
-- Binary String Generation  
-- Subset Generation  
-- Combination Generation  
-- Permutation Generation  
-
-All algorithms are written in **C++** using recursion and backtracking.
-
----
-
-## 🛠️ Tech Stack
-
-| Component | Technology |
-|--------|------------|
-| Algorithm Engine | C++ |
-| Visualization | Python |
-| Interface | Terminal (CLI) |
-| Tools | VS Code, Git, GitHub |
+This keeps the algorithm **fast**, **clean**, and **easy to understand**.
 
 ---
 
 ## 📂 Project Structure
 
-algorithm_visualizer/
-├── main.cpp # C++ algorithm implementations
-├── viewer.py # Python visualization (UI + animation)
-├── input.txt # Input configuration
-├── sample_output.txt # Sample generated output (optional)
-├── README.md
-├── LICENSE (MIT)
-└── .gitignore
-
+```
+.
+├── main.cpp        # Backtracking algorithms (C++)
+├── steps.log       # Auto-generated execution steps
+├── index.html      # Browser visualizer (p5.js)
+└── README.md
+```
 
 ---
 
-## ▶️ How to Run
+## ⚙️ Supported Algorithms
 
-### 1️⃣ Compile the C++ program
-  ```bash
-  g++ main.cpp -o main
-
-### 2️⃣ Prepare input (input.txt)
-
-  Example:
-
-  subset
-  1 2 3
-
-  permutation
-  1 2 3
-
-  combination
-  1 2 3
-
-  binary
-  3
-
-### 3️⃣ Run with visualization
-  Get-Content input.txt | .\main.exe | python viewer.py
-
-🎨 Visualization Output (Example)
-
-+ Choose 0
-  + Choose 0
-    => Output [0 0]
-  - Backtrack 0
-  + Choose 1
-    => Output [0 1]
-  - Backtrack 1
-- Backtrack 0
-
-
-+ → Recursive call (push to stack)
-
-- → Backtracking (pop from stack)
-
-=> → Valid output
-
-
-
-
-📈 What you learn from this project
-
-
-
-Practical understanding of recursion
-
-How stack frames behave
-
-Why backtracking algorithms are expensive
-
-Difference between conceptual flow vs execution
-
-Clean separation of logic and visualization
-
-
-
-📌 Why this design?
-
-
-C++ handles algorithm execution efficiently
-
-Python simplifies visualization and UI
-
-Separation of concerns keeps the project clean and extendable
-
-
-
-🔓 License
-
-
-This project is licensed under the MIT License — free to use, modify, and learn from.
-
-
-
-👤 Author
-
-
-Syed Naquib - (NaQeEb313)
-Engineering Student | Learning Algorithms & Systems
-
+| Name          | Description                      |
+| ------------- | -------------------------------- |
+| `binary`      | Binary string generation         |
+| `subset`      | All subsets of a set             |
+| `combination` | k-combinations (k fixed in code) |
+| `permutation` | All permutations of a set        |
 
 ---
+
+## 🚀 How to Use (After Downloading)
+
+### 1️⃣ Compile the Code
+
+```bash
+g++ main.cpp -o visualizer
+```
+
+---
+
+### 2️⃣ Run the Program and Give Input
+
+The program reads from **standard input**.
+
+#### Input Format
+
+```
+<algorithm_name>
+<input values>
+```
+
+#### Examples
+
+**Binary (length = 3)**
+
+```
+binary
+3
+```
+
+**Subset**
+
+```
+subset
+1 2 3
+```
+
+**Combination**
+
+```
+combination
+1 2 3 4
+```
+
+**Permutation**
+
+```
+permutation
+1 2 3
+```
+
+Run:
+
+```bash
+./visualizer
+```
+
+✔ This generates **`steps.log`**
+
+---
+
+### 3️⃣ Open the Visualizer in Browser
+
+Start a local server (recommended):
+
+```bash
+python -m http.server
+```
+
+Open in browser:
+
+```
+http://localhost:8000/index.html
+```
+
+📌 **`steps.log` and `index.html` must be in the same folder.**
+
+---
+
+## 🎮 Browser Controls
+
+| Key   | Action       |
+| ----- | ------------ |
+| Space | Play / Pause |
+| `+`   | Speed up     |
+| `-`   | Slow down    |
+
+---
+
+## 📏 Maximum Input Size (IMPORTANT)
+
+Backtracking grows **exponentially**, so limits are intentional.
+
+### 🔹 Recommended (With Visualization)
+
+```
+Input size: 8 – 12
+```
+
+✔ Smooth animation
+✔ Clear understanding
+✔ Best for learning & demos
+
+---
+
+### 🔹 Without Visualization (C++ only)
+
+```
+Binary / Subset: up to 25–30
+Permutation: up to 10–11
+```
+
+⚠️ Not suitable for visualization
+
+---
+
+### 📊 Algorithm-wise Limits (Visual)
+
+| Algorithm       | Max Input |
+| --------------- | --------- |
+| Binary / Subset | 10–12     |
+| Combination     | 8–10      |
+| Permutation     | 7–8       |
+
+---
+
+## ⚡ Performance Notes
+
+* C++ runs **without delay by default**
+* Visualization speed is controlled **only in the browser**
+* Logging is optimized for speed
+
+---
+
+## 🎓 Educational Purpose
+
+This project helps understand:
+
+* Recursion
+* Backtracking
+* Call stack behavior
+* Time complexity growth
+
+Ideal for:
+
+* College projects
+* Viva / presentations
+* Algorithm learning
+
+---
+
+## 🧠 Design Philosophy
+
+> **Compute fast. Visualize separately.**
+
+The algorithm does **not** slow down for animation.
+The browser replays execution independently.
+
+---
+
+## 🔮 Future Scope
+
+* Recursion tree visualization
+* Step skipping / fast-forward
+* Zoom & pan support
+* Export animation
+
+---
+
+## 📜 License
+
+Free to use for **educational and personal purposes**.
+
+---
+
 
