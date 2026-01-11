@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Backtracking Visualizer</title>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+</head>
+
+<body>
+<script>
+/* ===================== CONFIG ===================== */
+
+// limits
+const MAX_OUTPUTS = 3;
+
+// fixed block sizes
+const BLOCK_W = 50;
+const BLOCK_H = 45;
+
+// fixed spacing
+const HORIZONTAL_GAP = 22;
+const VERTICAL_GAP = 18;
+const OUTPUT_GAP = BLOCK_H + VERTICAL_GAP;
+
+// layout positions
+const OUTPUT_BASE_X = 20;     // fully left
+const OUTPUT_BASE_Y = 340;
+const PATH_Y = OUTPUT_BASE_Y + OUTPUT_GAP + 14;
+const CALLSTACK_Y = 80;
+
+// graph
+const GRAPH_X = 760;
+const GRAPH_Y = 120;
+const GRAPH_W = 400;
+const GRAPH_H = 280;
+
+// animation
+const OUTPUT_LERP = 0.05;
+
+/* ===================== STATE ===================== */
+
+let steps = [];
+let path = [];
+let outputs = [];
+let complexityData = [];
+
+let stepIndex = 0;
+let stepsLoaded = false;
+
+let autoPlay = true;
+let frameDelay = 45;
+let lastStepFrame = 0;
+
+/* ===================== LOAD STEPS ===================== */
+
+async function loadSteps() {
+  const res = await fetch("steps.log");
+  const text = await res.text();
+  const lines = text.split("\n");
+
+  for (let line of lines) {
+    line = line.trim();
+    if (!line) continue;
+
+    const p = line.split(" ");
+    if (p[0] === "choose") steps.push({ type: "choose", value: p[2] });
+    else if (p[0] === "backtrack") steps.push({ type: "backtrack" });
+    else if (p[0] === "output") steps.push({ type: "output" });
+  }
+  stepsLoaded = true;
+}
+
+/* ===================== SETUP ===================== */
+
+function setup() {
+  createCanvas(1200, 600);
+  textFont("monospace");
+  textSize(18);
+  loadSteps();
+}
+
+/* ===================== DRAW ===================== */
+
+function draw() {
+  background(15);
+
+  if (!stepsLoaded) {
+    fill(255);
+    text("Loading steps...", 20, 40);
+    return;
+  }
+
+  fill(255);
+  text("Backtracking Algorithm Visualizer", 20, 40);
+
+  drawCallStack();
+  drawComplexityGraph();
+  drawOutputs();
+  drawCurrentPath();
+
+  if (autoPlay && frameCount - lastStepFrame > frameDelay) {
+    advanceStep();
+    lastStepFrame = frameCount;
+  }
+
+  fill(180);
+  text(`Step ${stepIndex}/${steps.length}`, 20, 580);
+}
+
+/* ===================== CALL STACK ===================== */
+
+function drawCallStack() {
+  fill(255);
+  text("Call Stack", 20, CALLSTACK_Y - 15);
+
+  stroke(200);
+  fill(40);
+  rect(20, CALLSTACK_Y, 220, 36, 8);
+
+  noStroke();
+  fill(200);
+  text(`solve(depth=${path.length})`, 34, CALLSTACK_Y + 24);
+}
+
+/* ===================== OUTPUTS ===================== */
+
+function drawOutputs() {
+  fill(255);
+  text("Outputs (current + prev 2)", OUTPUT_BASE_X, OUTPUT_BASE_Y - OUTPUT_GAP * 3 - 12);
+
+  for (let out of outputs) {
+    out.y = lerp(out.y, out.targetY, OUTPUT_LERP);
+
+    let x = OUTPUT_BASE_X;
+    for (let v of out.values) {
+      stroke(255, 200, 80);
+      strokeWeight(2);
+      fill(40);
+      rect(x, out.y, BLOCK_W, BLOCK_H, 8);
+
+      noStroke();
+      fill(255, 200, 80);
+      text(v, x + BLOCK_W / 2 - 6, out.y + BLOCK_H / 2 + 6);
+
+      x += BLOCK_W + HORIZONTAL_GAP;
+    }
+  }
+}
+
+/* ===================== CURRENT PATH ===================== */
+
+function drawCurrentPath() {
+  fill(255);
+  text("Current Path", OUTPUT_BASE_X, PATH_Y - 10);
+
+  let x = OUTPUT_BASE_X;
+  for (let v of path) {
+    stroke(0, 200, 255);
+    strokeWeight(2);
+    fill(0, 180, 240);
+    rect(x, PATH_Y, BLOCK_W, BLOCK_H, 8);
+
+    noStroke();
+    fill(0);
+    text(v, x + BLOCK_W / 2 - 6, PATH_Y + BLOCK_H / 2 + 6);
+
+    x += BLOCK_W + HORIZONTAL_GAP;
+  }
+}
+
+/* ===================== COMPLEXITY GRAPH ===================== */
+
+function drawComplexityGraph() {
+
+  noStroke();
+  fill(25);
+  rect(GRAPH_X, GRAPH_Y, GRAPH_W, GRAPH_H, 10);
+
+  stroke(180);
+  noFill();
+  rect(GRAPH_X, GRAPH_Y, GRAPH_W, GRAPH_H, 10);
+
+  noStroke();
+  fill(255);
+  text("Steps vs Recursion Depth", GRAPH_X + 10, GRAPH_Y - 10);
+
+  stroke(60);
+  for (let i = 1; i < 5; i++) {
+    let y = map(i, 0, 5, GRAPH_Y, GRAPH_Y + GRAPH_H);
+    line(GRAPH_X, y, GRAPH_X + GRAPH_W, y);
+  }
+
+  if (complexityData.length < 2) return;
+
+  let maxDepth = max(complexityData);
+
+  stroke(0, 255, 120);
+  strokeWeight(2);
+  noFill();
+  beginShape();
+  for (let i = 0; i < complexityData.length; i++) {
+    let x = map(i, 0, complexityData.length - 1,
+      GRAPH_X + 15, GRAPH_X + GRAPH_W - 15);
+    let y = map(complexityData[i], 0, maxDepth,
+      GRAPH_Y + GRAPH_H - 15, GRAPH_Y + 15);
+    vertex(x, y);
+  }
+  endShape();
+}
+
+/* ===================== STEP PLAYER ===================== */
+
+function advanceStep() {
+
+  if (stepIndex >= steps.length) {
+    stepIndex = 0;
+    path = [];
+    outputs = [];
+    complexityData = [];
+    return;
+  }
+
+  const step = steps[stepIndex];
+
+  if (step.type === "choose") path.push(step.value);
+  else if (step.type === "backtrack") path.pop();
+
+  else if (step.type === "output") {
+
+    outputs.push({
+      values: [...path],
+      y: OUTPUT_BASE_Y + OUTPUT_GAP * 1.5,
+      targetY: OUTPUT_BASE_Y
+    });
+
+    while (outputs.length > MAX_OUTPUTS) outputs.shift();
+
+    for (let i = 0; i < outputs.length; i++) {
+      const fromBottom = outputs.length - 1 - i;
+      outputs[i].targetY = OUTPUT_BASE_Y - fromBottom * OUTPUT_GAP;
+    }
+  }
+
+  complexityData.push(path.length);
+  stepIndex++;
+}
+
+/* ===================== INPUT ===================== */
+
+function keyPressed() {
+  if (key === ' ') autoPlay = !autoPlay;
+}
+</script>
+</body>
+</html>
